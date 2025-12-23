@@ -1,3 +1,63 @@
-(ns hello)
+(ns hello
+  (:import bpy
+           math
+           [mathutils :refer [Vector]]))
 
-(println "hello")
+(defn clear-mesh-objects []
+  (.select-all     bpy.ops/object ** :action "DESELECT")
+  (.select-by-type bpy.ops/object ** :type "MESH")
+  (.delete         bpy.ops/object))
+
+(defn create-random-material []
+  (let [mat  (.new bpy.data/materials ** :name "RandomMaterial")
+        _    (set! (.-use-nodes mat) true)
+        bsdf (aget (.. mat -node-tree -nodes) "Principled BSDF")]
+
+    (set! (-> bsdf .-inputs (aget "Base Color") .-default-value)
+          [(rand) (rand) (rand) 1])
+    mat))
+
+(defn create-torus [radius tube-radius location segments]
+  (.primitive-torus-add bpy.ops/mesh **
+                        :major-radius radius
+                        :minor-radius tube-radius
+                        :location location
+                        :major-segments segments
+                        :minor-segments segments)
+  (let [material (create-random-material)]
+    (-> bpy.context/object .-data .-materials (.append material))))
+
+
+
+(defn create-pattern [{:keys [layers-num radius tube-radius]
+                       :or {layers-num 2
+                            radius 2
+                            tube-radius 0.2}}]
+  (let [angle-step (/ math/pi 4)]
+    (dotimes [i layers-num]
+      (let [layer-radius (* radius (inc i))
+            objects-num (* 12 (inc i))]
+        (dotimes [j objects-num]
+          (let [angle (* j angle-step)
+                x (* layer-radius (math/cos angle))
+                y (* layer-radius (math/sin angle))
+                z (* i 0.5)]
+            (create-torus (/ radius 2) tube-radius [x y z] 48)))))))
+
+(comment
+  (clear-mesh-objects)
+  (create-torus 5, 5, [0 0 0] 48)
+  (create-pattern {:layers-num 5})
+
+  (.select-all     bpy.ops/object ** :action "DESELECT")
+  (.select-by-type bpy.ops/object ** :type "MESH")
+  (set! (.-location (bpy.data.objects/get "Torus.002"))
+        (Vector [0.0 0.0 0.0]))
+
+  (.select_pattern bpy.ops/object ** :pattern "Torus*")
+
+  (set! (.-location (bpy.data.objects/get "Torus.002"))
+        (Vector [0.0 0.0 0.0]))
+
+
+  :-)
