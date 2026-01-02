@@ -14,10 +14,50 @@
        (catch python/Exception err
          (println err))))
 
-(comment 
+(defn clear-mesh-objects []
+  (.select-all     bpy.ops/object ** :action "DESELECT")
+  (.select-by-type bpy.ops/object ** :type "MESH")
+  (.delete         bpy.ops/object))
+
+(defn view-axis [orientation]
+  ;; damn why python, why do you have to be so complex....
+  ;; or maybe this is just blender api's complexity hmm...
+  (doseq [area bpy.context.screen/areas]
+    (when (= "VIEW_3D" (.-type area))
+      (doseq [region (.-regions area)]
+        (when (= "WINDOW" (.-type region))
+          (let [thing (bpy.context/temp_override **
+                                                 :window bpy.context/window,
+                                                 :screen bpy.context/screen,
+                                                 :area area
+                                                 :region region)]
+            (try
+              (.__enter__ thing)
+              (bpy.ops.view3d/view_axis ** :type (name orientation))
+              (finally
+                (.__exit__ thing nil nil nil)))))))))
+
+
+
+(comment
   (hello)
-  
+
   (undo)
   (redo)
+
+  (clear-mesh-objects)
+  (bpy.ops.object/select-all ** :action "DESELECT")
+  (bpy.ops.object/select-by-type  ** :type "FONT")
+  (bpy.ops.object/delete)
+  (bpy.ops.object/text_add ** :location [0 0 0])
+
+
+  :LEFT
+  :RIGHT
+  :BOTTOM
+  :TOP
+  :FRONT
+  :BACK
+  (view-axis :TOP)
 
   :-)
