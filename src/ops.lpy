@@ -45,15 +45,13 @@
   (undo)
   (redo)
 
+  (bpy.ops.object/mode_set ** :mode "OBJECT")
   (clear-mesh-objects)
   (bpy.ops.object/select-all ** :action "DESELECT")
   (bpy.ops.object/select-by-type  ** :type "FONT")
 
-  (bpy.ops.object/mode_set ** :mode "OBJECT")
-
   ;; delete maneuvre
   (do
-    (bpy.ops.object/mode_set ** :mode "OBJECT")
     (bpy.ops.object/delete ** :use_global true)
     (doseq [curve (python/list bpy.data/curves)]
       (println curve)
@@ -75,6 +73,11 @@
   (do (bpy.ops.object/mode_set ** :mode "EDIT")
       (bpy.ops.mesh/select_all)
       (bpy.ops.mesh/decimate ** :ratio 0.25))
+  
+  (let [target-path (.absolute (basilisp.io/path (str "result/model_" 1 ".gltf")))]
+    (bpy.ops.export_scene/gltf ** :filepath (str target-path)))
+  
+  (def hmm *1) 
 
   :LEFT
   :RIGHT
