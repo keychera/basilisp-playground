@@ -20,3 +20,6 @@ imgui.ini
 
 # ignoring .blend files for now
 resources/blender/*
+scratch.lpy
+__pycache__
+*.blend*

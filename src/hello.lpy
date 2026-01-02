@@ -1,4 +1,5 @@
 (ns hello
+  (:require [ops])
   (:import bpy
            math
            [mathutils :refer [Vector]]))
@@ -27,8 +28,6 @@
   (let [material (create-random-material)]
     (-> bpy.context/object .-data .-materials (.append material))))
 
-
-
 (defn create-pattern [{:keys [layers-num radius tube-radius]
                        :or {layers-num 2
                             radius 2
@@ -49,6 +48,8 @@
 
 (comment
   (clear-mesh-objects)
+  (ops/hello)
+  (ops/undo)
   (create-torus 5, 5, [0 0 0] 48)
   (create-pattern {:layers-num 5})
 
@@ -61,6 +62,5 @@
 
   (set! (.-location (first bpy.context/selected_objects))
         (Vector [10.0 0.0 0.0]))
-
 
   :-)

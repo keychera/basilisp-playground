@@ -1,0 +1,91 @@
+(ns ops
+  (:import bpy))
+
+(defn hello []
+  (println "hmm"))
+
+(defn undo []
+  (try (bpy.ops.ed/undo)
+       (catch python/Exception err
+         (println err))))
+
+(defn redo []
+  (try (bpy.ops.ed/redo)
+       (catch python/Exception err
+         (println err))))
+
+(defn clear-mesh-objects []
+  (.select-all     bpy.ops/object ** :action "DESELECT")
+  (.select-by-type bpy.ops/object ** :type "MESH")
+  (.delete         bpy.ops/object))
+
+(defmacro py-with-1
+  "macro of python with but only 1 statement"
+  [a-statement & with-body]
+  `(let [a-binding# ~a-statement]
+     (try
+       (.__enter__ a-binding#)
+       ~@with-body
+       (finally
+         (.__exit__ a-binding# nil nil nil)))))
+
+(defn view-axis [orientation]
+  ;; damn why python, why do you have to be so complex....
+  ;; or maybe this is just blender api's complexity hmm...
+  (doseq [area bpy.context.screen/areas]
+    (when (= "VIEW_3D" (.-type area))
+      (doseq [region (.-regions area)]
+        (when (= "WINDOW" (.-type region))
+          (py-with-1 (bpy.context/temp_override ** :window bpy.context/window :screen bpy.context/screen, :area area :region region)
+            (bpy.ops.view3d/view_axis ** :type (name orientation))))))))
+
+(comment
+  (hello)
+
+  (undo)
+  (redo)
+
+  (bpy.ops.object/mode_set ** :mode "OBJECT")
+  (clear-mesh-objects)
+  (bpy.ops.object/select-all ** :action "DESELECT")
+  (bpy.ops.object/select-by-type  ** :type "FONT")
+
+  ;; delete maneuvre
+  (doseq [count (range 10)]
+    (do
+      (bpy.ops.object/delete ** :use_global true)
+      (doseq [curve (python/list bpy.data/curves)]
+        (println curve)
+        (bpy.data.curves/remove curve)))
+
+    (bpy.ops.object/text_add ** :location [0 0 0])
+
+    (let [curve (first (python/list bpy.data/curves))]
+      (set! (.. curve -extrude) 0.1))
+
+    (let [text (.get bpy.context.scene/objects "Text")
+          body (.. text -data -body)]
+      (println "prev" body)
+      (set! (.. text -data -body) (str count))
+    ;; bpy has this implicit context and the line below convert the selected object. this is our current understanding.
+      (bpy.ops.object/convert ** :target "MESH"))
+    ;; eval'ing the above form again will throw error because it is not idempotent (mutability...)
+
+    (do (bpy.ops.object/mode_set ** :mode "EDIT")
+        (bpy.ops.mesh/select_all)
+        (bpy.ops.mesh/decimate ** :ratio 0.25))
+
+    (let [target-path (.absolute (basilisp.io/path (str "result/model_num" count ".gltf")))]
+      (bpy.ops.export_scene/gltf ** :filepath (str target-path))))
+
+  (def hmm *1)
+
+  :LEFT
+  :RIGHT
+  :BOTTOM
+  :TOP
+  :FRONT
+  :BACK
+  (view-axis :TOP)
+
+  :-)
