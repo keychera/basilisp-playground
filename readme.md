@@ -37,4 +37,16 @@ keybinding for repl goodness
 
 ## note
 
-- issue in requiring other files, somehow it counts the "src" folder as the package
+- issue in requiring other files. in hello.lpy, running (ops/undo) from repl cause the following:
+    - workaround: just repl'ing in one file for now.
+
+```
+Traceback (most recent call last):
+  File "...basilisp-playground\src\ops.lpy", line 5, in undo
+    (try (.undo bpy.ops/ed)
+          ^^^^^^^^^^^^^^^
+NameError: name 'bpy_rvMfRT' is not defined
+
+During handling of the above exception, another exception occurred:
+...
+```

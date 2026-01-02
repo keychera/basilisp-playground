@@ -1,4 +1,5 @@
 (ns hello
+  (:require [ops])
   (:import bpy
            math
            [mathutils :refer [Vector]]))
@@ -49,6 +50,8 @@
 
 (comment
   (clear-mesh-objects)
+  (ops/hello)
+  (ops/undo)
   (create-torus 5, 5, [0 0 0] 48)
   (create-pattern {:layers-num 5})
 
