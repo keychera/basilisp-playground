@@ -22,4 +22,4 @@ imgui.ini
 resources/blender/*
 scratch.lpy
 __pycache__
-*.blend
+*.blend*
