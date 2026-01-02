@@ -54,16 +54,19 @@
       (doseq [curve (python/list bpy.data/curves)]
         (println curve)
         (bpy.data.curves/remove curve)))
-  
+
   (bpy.ops.object/text_add ** :location [0 0 0])
+
+  (let [curve (first (python/list bpy.data/curves))]
+    (set! (.. curve -extrude) 0.1))
 
   (let [text (.get bpy.context.scene/objects "Text")
         body (.. text -data -body)]
     (println "prev" body)
-    (set! (.. text -data -body) "2026"))
-
-  (let [curve (first (python/list bpy.data/curves))]
-    (set! (.. curve -extrude) 0.1))
+    (set! (.. text -data -body) "2026")
+    ;; bpy has this implicit context and the line below convert the selected object. this is our current understanding.
+    (bpy.ops.object/convert ** :target "MESH"))
+    ;; eval'ing the above form again will throw error because it is not idempotent (mutability...)
 
   :LEFT
   :RIGHT
