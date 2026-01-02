@@ -1,0 +1,13 @@
+{
+    "calva.replConnectSequences": [
+        {
+            "name": "blender basilisp",
+            "projectType": "generic",
+            "cljsType": "none",
+            "autoSelectForConnect": true,
+            "nReplPortFile": [
+                ".nrepl-port"
+            ]
+        }
+    ]
+}

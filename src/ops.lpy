@@ -1,0 +1,19 @@
+(ns ops
+  (:import bpy))
+
+(defn undo []
+  (try (bpy.ops.ed/undo)
+       (catch python/Exception err
+         (println err))))
+
+(defn redo []
+  (try (bpy.ops.ed/redo)
+       (catch python/Exception err
+         (println err))))
+
+(comment 
+  
+  (undo)
+  (redo)
+
+  :-)
