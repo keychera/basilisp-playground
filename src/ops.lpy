@@ -19,6 +19,16 @@
   (.select-by-type bpy.ops/object ** :type "MESH")
   (.delete         bpy.ops/object))
 
+(defmacro py-with-1
+  "macro of python with but only 1 statement"
+  [a-statement with-body]
+  `(let [a-binding# ~a-statement]
+     (try
+       (.__enter__ a-binding#)
+       ~with-body
+       (finally
+         (.__exit__ a-binding# nil nil nil)))))
+
 (defn view-axis [orientation]
   ;; damn why python, why do you have to be so complex....
   ;; or maybe this is just blender api's complexity hmm...
@@ -26,18 +36,8 @@
     (when (= "VIEW_3D" (.-type area))
       (doseq [region (.-regions area)]
         (when (= "WINDOW" (.-type region))
-          (let [thing (bpy.context/temp_override **
-                                                 :window bpy.context/window,
-                                                 :screen bpy.context/screen,
-                                                 :area area
-                                                 :region region)]
-            (try
-              (.__enter__ thing)
-              (bpy.ops.view3d/view_axis ** :type (name orientation))
-              (finally
-                (.__exit__ thing nil nil nil)))))))))
-
-
+          (py-with-1 (bpy.context/temp_override ** :window bpy.context/window :screen bpy.context/screen, :area area :region region)
+            (bpy.ops.view3d/view_axis ** :type (name orientation))))))))
 
 (comment
   (hello)
@@ -51,6 +51,10 @@
   (bpy.ops.object/delete)
   (bpy.ops.object/text_add ** :location [0 0 0])
 
+  (let [text (.get bpy.context.scene/objects "Text")
+        body (.. text -data -body)]
+    (println "prev" body)
+    (set! (.. text -data -body) "clojure is awesome"))
 
   :LEFT
   :RIGHT

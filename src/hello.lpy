@@ -28,8 +28,6 @@
   (let [material (create-random-material)]
     (-> bpy.context/object .-data .-materials (.append material))))
 
-
-
 (defn create-pattern [{:keys [layers-num radius tube-radius]
                        :or {layers-num 2
                             radius 2
@@ -64,6 +62,5 @@
 
   (set! (.-location (first bpy.context/selected_objects))
         (Vector [10.0 0.0 0.0]))
-
 
   :-)
