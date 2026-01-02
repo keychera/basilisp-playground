@@ -21,11 +21,11 @@
 
 (defmacro py-with-1
   "macro of python with but only 1 statement"
-  [a-statement with-body]
+  [a-statement & with-body]
   `(let [a-binding# ~a-statement]
      (try
        (.__enter__ a-binding#)
-       ~with-body
+       ~@with-body
        (finally
          (.__exit__ a-binding# nil nil nil)))))
 
