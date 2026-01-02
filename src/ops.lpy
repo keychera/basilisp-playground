@@ -48,13 +48,22 @@
   (clear-mesh-objects)
   (bpy.ops.object/select-all ** :action "DESELECT")
   (bpy.ops.object/select-by-type  ** :type "FONT")
-  (bpy.ops.object/delete)
+
+  ;; delete maneuvre
+  (do (bpy.ops.object/delete ** :use_global true)
+      (doseq [curve (python/list bpy.data/curves)]
+        (println curve)
+        (bpy.data.curves/remove curve)))
+  
   (bpy.ops.object/text_add ** :location [0 0 0])
 
   (let [text (.get bpy.context.scene/objects "Text")
         body (.. text -data -body)]
     (println "prev" body)
-    (set! (.. text -data -body) "clojure is awesome"))
+    (set! (.. text -data -body) "2026"))
+
+  (let [curve (first (python/list bpy.data/curves))]
+    (set! (.. curve -extrude) 0.1))
 
   :LEFT
   :RIGHT
