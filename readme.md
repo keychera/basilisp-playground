@@ -34,3 +34,7 @@ keybinding for repl goodness
     }
 ]
 ```
+
+## note
+
+- issue in requiring other files, somehow it counts the "src" folder as the package
