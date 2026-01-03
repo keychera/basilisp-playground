@@ -50,3 +50,6 @@ NameError: name 'bpy_rvMfRT' is not defined
 During handling of the above exception, another exception occurred:
 ...
 ```
+
+
+- why can `basilisp.edn` be `:require`d but not `basilisp.io` ?
