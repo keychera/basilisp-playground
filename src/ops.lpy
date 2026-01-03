@@ -51,7 +51,9 @@
   (bpy.ops.object/select-by-type  ** :type "FONT")
 
   ;; delete maneuvre
-  (doseq [count (range 10)]
+  (doseq [{:keys [value nick]} (conj (into [] (map (fn [n] {:value n :nick (str "num" n)})) (range 10))
+                                     {:value "!" :nick "bikkuri"}
+                                     {:value "*" :nick "hoshi"})]
     (do
       (bpy.ops.object/delete ** :use_global true)
       (doseq [curve (python/list bpy.data/curves)]
@@ -66,7 +68,7 @@
     (let [text (.get bpy.context.scene/objects "Text")
           body (.. text -data -body)]
       (println "prev" body)
-      (set! (.. text -data -body) (str count))
+      (set! (.. text -data -body) (str value))
     ;; bpy has this implicit context and the line below convert the selected object. this is our current understanding.
       (bpy.ops.object/convert ** :target "MESH"))
     ;; eval'ing the above form again will throw error because it is not idempotent (mutability...)
@@ -75,7 +77,7 @@
         (bpy.ops.mesh/select_all)
         (bpy.ops.mesh/decimate ** :ratio 0.25))
 
-    (let [target-path (.absolute (basilisp.io/path (str "result/model_num" count ".gltf")))]
+    (let [target-path (.absolute (basilisp.io/path (str "result/model_" nick ".gltf")))]
       (bpy.ops.export_scene/gltf ** :filepath (str target-path))))
 
   (def hmm *1)
