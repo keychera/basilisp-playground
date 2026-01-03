@@ -70,7 +70,8 @@
       (println "prev" body)
       (set! (.. text -data -body) (str value))
     ;; bpy has this implicit context and the line below convert the selected object. this is our current understanding.
-      (bpy.ops.object/convert ** :target "MESH"))
+      (bpy.ops.object/convert ** :target "MESH")
+      (bpy.ops.object/origin_set ** :type "GEOMETRY_ORIGIN"))
     ;; eval'ing the above form again will throw error because it is not idempotent (mutability...)
 
     (do (bpy.ops.object/mode_set ** :mode "EDIT")
