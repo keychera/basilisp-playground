@@ -37,7 +37,7 @@ keybinding for repl goodness
 
 ## note
 
-- issue in requiring other files. in hello.lpy, running (ops/undo) from repl cause the following:
+- issue in requiring other files. in hello.lpy, requiring from repl cause the following:
     - workaround: just repl'ing in one file for now.
 
 ```
