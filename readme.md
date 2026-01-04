@@ -136,3 +136,16 @@ ImportError: Basilisp namespace 'chera.ops' not found
     - nope, require still doesn't work. but referring the full name works tho
 
 - why can `basilisp.edn` be `:require`d but not `basilisp.io` ?
+
+    if I call (io/path) directly, the following error thrown:
+
+```
+  exception: <class 'basilisp.lang.compiler.exception.CompilerException'>
+      phase: :analyzing
+    message: can't identify aliased form
+       form: io/path
+   location: ...\Documents\projects\basilisp-playground\src\chera\ops.lpy:97
+    context:
+```
+
+but calling `basilisp.io/path` is working
