@@ -149,3 +149,60 @@ ImportError: Basilisp namespace 'chera.ops' not found
 ```
 
 but calling `basilisp.io/path` is working
+
+
+## troubleshooting attempt 1
+
+- put all code in root dir, changing ns name to just file name -> different error
+  - requiring make my macro throws the following: 
+
+  ```
+    exception: <class 'NameError'> from <class 'basilisp.lang.compiler.exception.CompilerException'>
+      phase: :macroexpansion
+    message: error occurred during macroexpansion: name 'basilisp_core' is not defined
+       form: (py-with-1 (bpy.context/temp_override ** :window bpy.context/window :screen bpy.context/screen :area area :region region) (bpy.ops.view3d/view_axis ** :type (name orientation)))
+  ```
+
+  removing the macro temporarily, requiring stops throwing error. but if I run (ops/hello), it will throw similar `basilisp_core` error
+
+  ```
+  Traceback (most recent call last):
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp_nrepl_async\nrepl_server.lpy", line 140, in do_handle_eval
+    (let [result (last
+                 ^^^^^
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp\lang\runtime.py", line 2075, in trampoline
+    ret = f(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp\core.lpy", line 480, in last
+    (if (seq (rest s))
+             ^^^^^^^^
+  File "C:\Program Files\Blender Foundation\Blender 5.0\5.0\python\Lib\functools.py", line 909, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp\lang\runtime.py", line 1219, in rest
+    n = to_seq(o)
+        ^^^^^^^^^
+  File "C:\Program Files\Blender Foundation\Blender 5.0\5.0\python\Lib\functools.py", line 909, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp\lang\seq.py", line 285, in _to_seq_lazyseq
+    return o.seq()
+           ^^^^^^^
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp\lang\seq.py", line 173, in seq
+    self._compute_seq()
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp\lang\seq.py", line 168, in _compute_seq
+    self._obj = gen()
+                ^^^^^
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp_nrepl_async\nrepl_server.lpy", line 145, in ____do_handle_eval__for_5893_5929__lisp_fn_5930
+    (basilisp.lang.compiler/compile-and-exec-form form
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "...\AppData\Roaming\Blender Foundation\Blender\5.0\extensions\.local\lib\python3.11\site-packages\basilisp\lang\compiler\__init__.py", line 194, in compile_and_exec_form
+    last = getattr(ns.module, final_wrapped_name)()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "...\Documents\projects\basilisp-playground\hello.lpy", line 53, in __lisp_expr___527
+    (ops/hello)
+  File "...\Documents\projects\basilisp-playground\ops.lpy", line 7, in hello
+    (println "is that working?")
+     ^^^^^^^
+NameError: name 'basilisp_core' is not defined
+  ```

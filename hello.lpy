@@ -1,6 +1,6 @@
 (ns hello
   (:require
-   [chera.ops :as ops])
+   [ops :as ops])
   (:import bpy
            math
            [mathutils :refer [Vector]]))
