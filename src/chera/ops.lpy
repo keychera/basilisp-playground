@@ -1,4 +1,4 @@
-(ns ops
+(ns chera.ops
   (:require
    [basilisp.edn :as edn])
   (:import bpy))
@@ -22,25 +22,25 @@
   (.select-by-type bpy.ops/object ** :type "MESH")
   (.delete         bpy.ops/object))
 
-;; (defmacro py-with-1
-;;   "macro of python with but only 1 statement"
-;;   [a-statement & with-body]
-;;   `(let [a-binding# ~a-statement]
-;;      (try
-;;        (.__enter__ a-binding#)
-;;        ~@with-body
-;;        (finally
-;;          (.__exit__ a-binding# nil nil nil)))))
+(defmacro py-with-1
+  "macro of python with but only 1 statement"
+  [a-statement & with-body]
+  `(let [a-binding# ~a-statement]
+     (try
+       (.__enter__ a-binding#)
+       ~@with-body
+       (finally
+         (.__exit__ a-binding# nil nil nil)))))
 
-;; (defn view-axis [orientation]
-;;   ;; damn why python, why do you have to be so complex....
-;;   ;; or maybe this is just blender api's complexity hmm...
-;;   (doseq [area bpy.context.screen/areas]
-;;     (when (= "VIEW_3D" (.-type area))
-;;       (doseq [region (.-regions area)]
-;;         (when (= "WINDOW" (.-type region))
-;;           (py-with-1 (bpy.context/temp_override ** :window bpy.context/window :screen bpy.context/screen, :area area :region region)
-;;             (bpy.ops.view3d/view_axis ** :type (name orientation))))))))
+(defn view-axis [orientation]
+  ;; damn why python, why do you have to be so complex....
+  ;; or maybe this is just blender api's complexity hmm...
+  (doseq [area bpy.context.screen/areas]
+    (when (= "VIEW_3D" (.-type area))
+      (doseq [region (.-regions area)]
+        (when (= "WINDOW" (.-type region))
+          (py-with-1 (bpy.context/temp_override ** :window bpy.context/window :screen bpy.context/screen, :area area :region region)
+            (bpy.ops.view3d/view_axis ** :type (name orientation))))))))
 
 (comment
   (hello)

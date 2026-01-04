@@ -1,9 +1,11 @@
 (ns hello
   (:require
-   [ops :as ops])
+   [chera.ops :as ops])
   (:import bpy
            math
            [mathutils :refer [Vector]]))
+
+(chera.ops/hello)
 
 (defn clear-mesh-objects []
   (.select-all     bpy.ops/object ** :action "DESELECT")

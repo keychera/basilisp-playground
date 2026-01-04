@@ -206,3 +206,9 @@ but calling `basilisp.io/path` is working
      ^^^^^^^
 NameError: name 'basilisp_core' is not defined
   ```
+
+
+# troubleshooting #2
+
+- set basilisp project dir to <project>/src
+  - basically the same error as troubleshooting #1
