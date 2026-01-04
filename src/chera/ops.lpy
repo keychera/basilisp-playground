@@ -1,10 +1,11 @@
-(ns ops
+(ns chera.ops
   (:require
    [basilisp.edn :as edn])
   (:import bpy))
 
 (defn hello []
-  (println "hmm"))
+  (println "is that working?")
+  "return")
 
 (defn undo []
   (try (bpy.ops.ed/undo)

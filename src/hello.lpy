@@ -1,5 +1,6 @@
 (ns hello
-  (:require [ops])
+  (:require
+   [chera.ops :as ops])
   (:import bpy
            math
            [mathutils :refer [Vector]]))
@@ -48,10 +49,14 @@
 
 (comment
   (clear-mesh-objects)
+  (chera.ops/hello)
   (ops/hello)
+  (chera.ops/undo)
   (ops/undo)
   (create-torus 5, 5, [0 0 0] 48)
   (create-pattern {:layers-num 5})
+
+  (ops/clear-mesh-objects)
 
   (.select-by-type bpy.ops/object ** :type "MESH")
   (set! (.-location (bpy.data.objects/get "Torus.002"))
